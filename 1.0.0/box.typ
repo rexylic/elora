@@ -1,6 +1,7 @@
 // Theorem boxes
 
 #import "@preview/showybox:2.0.4": showybox as box
+#import "utils.typ": coalesce
 
 #let colored-box(..args, color: black) = box(
   frame: (
@@ -64,19 +65,21 @@
   } else {
     (title: title)
   }
+  let meta = if argc > 1 and argv.at(0) != [] {
+    argv.at(0)
+  } else []
   figure(
     kind: ident,
     numbering: numbering,
-    supplement: if argc > 1 and argv.at(0) != [] {
-      "!" + argv.at(0)
-    } else {
-      name
-    },
-    colored-box(
-      color: color-from(index),
-      body,
-      ..box-named-args,
-    ),
+    supplement: name,
+    [
+      #metadata(meta)
+      #colored-box(
+        color: color-from(index),
+        body,
+        ..box-named-args,
+      )
+    ],
   )
 }
 

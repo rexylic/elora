@@ -80,14 +80,11 @@
   show ref: it => {
     let el = it.element
     if (
-      el != none
-        and el.func() == figure
-        and "children" in el.supplement.fields()
-        and el.supplement.fields().at("children").len() > 1
+      el != none and el.func() == figure and el.body.children.at(1).value != []
     ) {
       link(
         el.location(),
-        el.supplement.at("children").at(1),
+        el.body.children.at(1).value,
       )
     } else {
       it
