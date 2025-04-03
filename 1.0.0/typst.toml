@@ -1,0 +1,7 @@
+[package]
+name = "elora"
+version = "1.0.0"
+entrypoint = "main.typ"
+authors = ["Rex Fang <i@rexylic.com>"]
+license = "MIT"
+description = "Rex's Typst Template"
