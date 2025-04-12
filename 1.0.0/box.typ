@@ -22,10 +22,8 @@
   footer-style: (
     color: color,
     sep-thickness: 0pt,
-    align: end,
   ),
   spacing: 0pt,
-  breakable: true,
   ..args,
 )
 
@@ -37,6 +35,8 @@
 
 #let mybox(
   ..args,
+  label: auto,
+  cite: [],
   index: 0,
   name: "Theorem",
   ident: "thm",
@@ -45,7 +45,9 @@
 ) = {
   let argv = args.pos()
   let argc = argv.len()
-  if argc == 0 or argc > 3 { panic("invalid number of positional arguments passed to mybox") }
+  if argc == 0 or argc > 3 {
+    panic("invalid number of positional arguments passed to mybox")
+  }
   let body = if argc == 1 { argv.at(0) } else { argv.at(1) }
   if qed { body += h(1fr) + math.qed }
   let title-base = if numbering == none {
@@ -53,21 +55,24 @@
   } else {
     name + " " + context counter(figure.where(kind: ident)).display(numbering)
   }
+  if cite != [] { title-base += [ (#cite)] }
   let title = if argc == 1 {
     title-base
   } else if qed {
     argv.at(0)
   } else {
-    title-base + h(1em) + argv.at(0)
+    title-base + h(1fr) + argv.at(0)
   }
   let box-named-args = if argc > 2 {
     (title: title, footer: argv.at(2))
   } else {
     (title: title)
   }
-  let meta = if argc > 1 and argv.at(0) != [] {
+  let meta = if label == auto and argc > 1 and argv.at(0) != [] {
     argv.at(0)
-  } else []
+  } else if label == auto or label == none [] else {
+    label
+  }
   figure(
     kind: ident,
     numbering: numbering,
@@ -75,6 +80,7 @@
     [
       #metadata(meta)
       #colored-box(
+        breakable: qed,
         color: color-from(index),
         body,
         ..box-named-args,
